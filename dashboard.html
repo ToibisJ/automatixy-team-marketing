@@ -5,138 +5,172 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Automatixy — Command Center</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
   :root {
-    --bg: #05060f;
-    --panel: #0d1117;
-    --panel2: #161b22;
-    --border: #21262d;
-    --accent: #58a6ff;
-    --green: #3fb950;
-    --yellow: #e3b341;
-    --red: #f78166;
-    --purple: #bc8cff;
-    --heading: #e6edf3;
-    --body: #8b949e;
-    --muted: #484f58;
+    --bg:#05060f; --panel:#0d1117; --panel2:#161b22; --border:#21262d;
+    --accent:#58a6ff; --green:#3fb950; --yellow:#e3b341; --red:#f78166;
+    --purple:#bc8cff; --heading:#e6edf3; --body:#8b949e; --muted:#484f58;
   }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--heading); direction: rtl; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--heading); direction:rtl; }
 
   /* TOPBAR */
-  .topbar { background: var(--panel); border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  .topbar-brand { font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
-  .topbar-links { display: flex; gap: 8px; }
-  .topbar-link { display: flex; align-items: center; gap: 5px; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-size: 12px; color: var(--body); text-decoration: none; transition: all 0.2s; }
-  .topbar-link:hover { border-color: var(--accent); color: var(--accent); }
-  .topbar-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-  .dot.yellow { background: var(--yellow); }
-  .dot.red { background: var(--red); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .topbar { background:var(--panel); border-bottom:1px solid var(--border); padding:0 20px; height:52px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; }
+  .topbar-brand { font-size:14px; font-weight:700; color:var(--accent); letter-spacing:1px; }
+  .topbar-center { display:flex; align-items:center; gap:8px; }
+  .topbar-link { display:flex; align-items:center; gap:5px; background:var(--panel2); border:1px solid var(--border); border-radius:6px; padding:5px 12px; font-size:12px; color:var(--body); text-decoration:none; transition:all .2s; }
+  .topbar-link:hover { border-color:var(--accent); color:var(--accent); }
+  .topbar-right { display:flex; align-items:center; gap:16px; }
+  .live-clock { font-size:13px; color:var(--body); font-variant-numeric:tabular-nums; }
+  .topbar-status { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--green); }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; display:inline-block; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
   /* LAYOUT */
-  .layout { display: grid; grid-template-columns: 200px 1fr; min-height: calc(100vh - 52px); }
+  .layout { display:grid; grid-template-columns:190px 1fr 280px; min-height:calc(100vh - 52px); }
 
   /* SIDEBAR */
-  .sidebar { background: var(--panel); border-left: 1px solid var(--border); padding: 20px 0; }
-  .sidebar-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; padding: 0 14px; margin: 16px 0 6px; }
-  .sidebar-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 14px; font-size: 13px; color: var(--body); cursor: pointer; border-right: 2px solid transparent; transition: all 0.15s; text-decoration: none; }
-  .sidebar-item:hover, .sidebar-item.active { background: var(--panel2); color: var(--heading); border-right-color: var(--accent); }
-  .badge { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 1px 7px; font-size: 11px; color: var(--body); }
-  .badge.active-badge { border-color: var(--green); color: var(--green); }
+  .sidebar { background:var(--panel); border-left:1px solid var(--border); padding:16px 0; }
+  .sidebar-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; padding:0 14px; margin:14px 0 5px; }
+  .sidebar-item { display:flex; align-items:center; justify-content:space-between; padding:7px 14px; font-size:13px; color:var(--body); cursor:pointer; border-right:2px solid transparent; transition:all .15s; text-decoration:none; }
+  .sidebar-item:hover,.sidebar-item.active { background:var(--panel2); color:var(--heading); border-right-color:var(--accent); }
+  .badge { background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:1px 7px; font-size:11px; color:var(--body); }
+  .badge.g { border-color:var(--green); color:var(--green); }
+  .badge.r { border-color:var(--red); color:var(--red); }
 
   /* MAIN */
-  .main { padding: 24px; overflow-y: auto; }
-  .page-title { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-  .page-sub { font-size: 13px; color: var(--body); margin-bottom: 24px; }
+  .main { padding:20px; overflow-y:auto; }
+  .page-title { font-size:19px; font-weight:700; margin-bottom:2px; }
+  .page-sub { font-size:12px; color:var(--body); margin-bottom:20px; }
 
   /* STATS */
-  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
-  .stat-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .stat-label { font-size: 11px; color: var(--body); margin-bottom: 6px; }
-  .stat-value { font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
-  .stat-sub { font-size: 11px; color: var(--muted); }
-  .c-green { color: var(--green); }
-  .c-yellow { color: var(--yellow); }
-  .c-red { color: var(--red); }
-  .c-blue { color: var(--accent); }
-  .c-purple { color: var(--purple); }
+  .stats-row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
+  .stat-card { background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .stat-label { font-size:11px; color:var(--body); margin-bottom:5px; }
+  .stat-value { font-size:26px; font-weight:700; line-height:1; margin-bottom:4px; }
+  .stat-sub { font-size:10px; color:var(--muted); }
+  .stat-spark { margin-top:8px; height:28px; display:flex; align-items:flex-end; gap:2px; }
+  .spark-bar { flex:1; border-radius:2px 2px 0 0; opacity:.8; }
+  .c-green{color:var(--green)} .c-yellow{color:var(--yellow)} .c-red{color:var(--red)} .c-blue{color:var(--accent)} .c-purple{color:var(--purple)}
+
+  /* STATUS PILLS */
+  .sp { display:inline-flex; align-items:center; gap:4px; border-radius:20px; padding:3px 9px; font-size:11px; font-weight:600; white-space:nowrap; }
+  .sp-working { background:rgba(63,185,80,.1); color:var(--green); border:1px solid rgba(63,185,80,.25); }
+  .sp-idle { background:rgba(72,79,88,.3); color:var(--muted); border:1px solid var(--border); }
+  .sp-error { background:rgba(247,129,102,.1); color:var(--red); border:1px solid rgba(247,129,102,.25); }
+  .sp-review { background:rgba(227,179,65,.1); color:var(--yellow); border:1px solid rgba(227,179,65,.25); }
+  .sp-done { background:rgba(188,140,255,.1); color:var(--purple); border:1px solid rgba(188,140,255,.25); }
+  .sp-waiting { background:rgba(88,166,255,.1); color:var(--accent); border:1px solid rgba(88,166,255,.25); }
 
   /* SECTION */
-  .section { margin-bottom: 28px; }
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .section-title { font-size: 14px; font-weight: 600; }
-  .section-link { font-size: 12px; color: var(--accent); text-decoration: none; }
+  .section { margin-bottom:24px; }
+  .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .section-title { font-size:14px; font-weight:600; }
+  .section-link { font-size:12px; color:var(--accent); text-decoration:none; }
 
   /* AGENT GRID */
-  .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-  .agent-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; transition: border-color 0.2s; }
-  .agent-card:hover { border-color: var(--accent); }
-  .agent-card.working { border-color: rgba(63,185,80,0.3); }
-  .agent-card.error { border-color: rgba(247,129,102,0.3); }
-  .agent-card.idle { opacity: 0.65; }
+  .agent-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+  .agent-card { background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:14px; transition:border-color .2s; }
+  .agent-card:hover { border-color:var(--accent); }
+  .agent-card.working { border-color:rgba(63,185,80,.35); }
+  .agent-card.reviewing { border-color:rgba(227,179,65,.35); }
+  .agent-card.idle { opacity:.6; }
+  .agent-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:8px; }
+  .agent-icon { font-size:20px; margin-left:8px; flex-shrink:0; }
+  .agent-name { font-size:13px; font-weight:600; }
+  .agent-role { font-size:10px; color:var(--body); margin-top:1px; }
+  .agent-task { font-size:12px; color:var(--body); background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:7px 9px; margin:8px 0; line-height:1.5; }
+  .agent-task-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:2px; }
+  .progress-wrap { margin-bottom:6px; }
+  .progress-label-row { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); margin-bottom:3px; }
+  .progress-bg { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .progress-fill { height:100%; border-radius:2px; }
+  .agent-foot { display:flex; gap:6px; flex-wrap:wrap; }
+  .meta-tag { display:flex; align-items:center; gap:3px; font-size:10px; color:var(--muted); background:var(--panel); border:1px solid var(--border); border-radius:4px; padding:2px 6px; }
+  .ticket-ref { font-family:monospace; font-size:11px; color:var(--accent); }
 
-  .agent-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
-  .agent-icon { font-size: 22px; margin-left: 10px; }
-  .agent-name { font-size: 14px; font-weight: 600; color: var(--heading); }
-  .agent-role { font-size: 11px; color: var(--body); margin-top: 2px; }
+  /* MINI SPARKLINE per agent */
+  .agent-spark { display:flex; align-items:flex-end; gap:1.5px; height:20px; margin-bottom:6px; }
+  .agent-spark-bar { width:5px; border-radius:1px 1px 0 0; }
 
-  .status-pill { display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 9px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-  .sp-working { background: rgba(63,185,80,0.1); color: var(--green); border: 1px solid rgba(63,185,80,0.25); }
-  .sp-idle { background: rgba(72,79,88,0.3); color: var(--muted); border: 1px solid var(--border); }
-  .sp-error { background: rgba(247,129,102,0.1); color: var(--red); border: 1px solid rgba(247,129,102,0.25); }
-  .sp-review { background: rgba(227,179,65,0.1); color: var(--yellow); border: 1px solid rgba(227,179,65,0.25); }
-  .sp-done { background: rgba(188,140,255,0.1); color: var(--purple); border: 1px solid rgba(188,140,255,0.25); }
-  .sp-waiting { background: rgba(88,166,255,0.1); color: var(--accent); border: 1px solid rgba(88,166,255,0.25); }
+  /* DEPENDENCY MAP */
+  .dep-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .dep-col { border-left:1px solid var(--border); padding:12px; }
+  .dep-col:last-child { border-left:none; }
+  .dep-col-title { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .dep-ticket { background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:7px 9px; margin-bottom:6px; font-size:12px; cursor:default; transition:border-color .2s; }
+  .dep-ticket:hover { border-color:var(--accent); }
+  .dep-ticket-id { font-family:monospace; font-size:10px; color:var(--accent); margin-bottom:2px; }
+  .dep-ticket-name { color:var(--heading); font-size:11px; }
+  .dep-ticket.done-dep { border-color:rgba(63,185,80,.3); }
+  .dep-ticket.active-dep { border-color:rgba(88,166,255,.3); }
+  .dep-arrow { font-size:10px; color:var(--muted); margin-top:2px; }
 
-  .agent-task { font-size: 12px; color: var(--body); background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; line-height: 1.5; }
-  .agent-task-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  /* TICKETS TABLE */
+  .table-wrap { background:var(--panel2); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .wt { width:100%; border-collapse:collapse; font-size:12px; }
+  .wt th { text-align:right; padding:9px 12px; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); background:var(--panel); }
+  .wt td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--body); vertical-align:middle; }
+  .wt tr:last-child td { border-bottom:none; }
+  .wt tr:hover td { background:rgba(255,255,255,.02); }
+  .tid { font-family:monospace; font-size:11px; color:var(--accent); }
+  .ttitle { color:var(--heading); font-weight:500; }
+  .tdesc { font-size:10px; color:var(--body); margin-top:2px; }
+  .owner-pill { display:inline-flex; align-items:center; gap:4px; background:var(--panel); border:1px solid var(--border); border-radius:20px; padding:2px 7px; font-size:10px; white-space:nowrap; }
+  .ptag { display:inline-block; border-radius:4px; padding:2px 6px; font-size:10px; font-weight:700; }
+  .ptag-h { background:rgba(247,129,102,.15); color:var(--red); }
+  .ptag-m { background:rgba(227,179,65,.15); color:var(--yellow); }
+  .ptag-l { background:rgba(88,166,255,.1); color:var(--accent); }
+  .dep-tag { font-size:10px; color:var(--muted); font-family:monospace; }
 
-  .agent-progress { margin-bottom: 8px; }
-  .progress-bar-bg { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 4px; }
-  .progress-bar { height: 100%; border-radius: 2px; transition: width 0.5s; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
-
-  .agent-meta { display: flex; gap: 8px; flex-wrap: wrap; }
-  .meta-tag { display: flex; align-items: center; gap: 3px; font-size: 11px; color: var(--muted); background: var(--panel); border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px; }
-
-  .ticket-ref { font-family: monospace; font-size: 11px; color: var(--accent); }
-
-  /* WORKFLOW TABLE */
-  .table-wrap { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .workflow-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .workflow-table th { text-align: right; padding: 10px 14px; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); background: var(--panel); }
-  .workflow-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--body); vertical-align: middle; }
-  .workflow-table tr:last-child td { border-bottom: none; }
-  .workflow-table tr:hover td { background: rgba(255,255,255,0.02); }
-  .ticket-id { font-family: monospace; font-size: 12px; color: var(--accent); }
-  .ticket-title { color: var(--heading); font-weight: 500; font-size: 13px; }
-  .ticket-desc { font-size: 11px; color: var(--body); margin-top: 2px; }
-  .owner-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; font-size: 11px; white-space: nowrap; }
-  .ptag { display: inline-block; border-radius: 4px; padding: 2px 7px; font-size: 10px; font-weight: 700; }
-  .ptag-high { background: rgba(247,129,102,0.15); color: var(--red); }
-  .ptag-med { background: rgba(227,179,65,0.15); color: var(--yellow); }
-  .ptag-low { background: rgba(88,166,255,0.1); color: var(--accent); }
+  /* ACTIVITY FEED */
+  .feed-panel { background:var(--panel); border-right:1px solid var(--border); padding:16px; overflow-y:auto; }
+  .feed-title { font-size:13px; font-weight:600; margin-bottom:14px; color:var(--heading); border-bottom:1px solid var(--border); padding-bottom:10px; }
+  .feed-item { display:flex; gap:10px; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+  .feed-item:last-child { border-bottom:none; }
+  .feed-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+  .feed-body { flex:1; }
+  .feed-agent { font-size:12px; font-weight:600; color:var(--heading); }
+  .feed-action { font-size:11px; color:var(--body); line-height:1.4; margin-top:1px; }
+  .feed-time { font-size:10px; color:var(--muted); margin-top:3px; display:flex; align-items:center; gap:4px; }
+  .feed-dot { width:5px; height:5px; border-radius:50%; display:inline-block; }
+  .new-tag { background:rgba(63,185,80,.1); color:var(--green); border:1px solid rgba(63,185,80,.2); border-radius:4px; font-size:9px; padding:1px 5px; font-weight:700; }
 
   /* PHASES */
-  .phases { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
-  .phase { flex: 1; padding: 14px 16px; border-left: 1px solid var(--border); }
-  .phase:last-child { border-left: none; }
-  .phase-num { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
-  .phase-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
-  .phase-tickets { font-size: 11px; color: var(--body); }
-  .phase-done { background: rgba(63,185,80,0.04); }
-  .phase-active { background: rgba(88,166,255,0.06); border-top: 2px solid var(--accent); }
-  .phase-future { opacity: 0.45; }
+  .phases { display:flex; border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:20px; }
+  .phase { flex:1; padding:12px 14px; border-left:1px solid var(--border); }
+  .phase:last-child { border-left:none; }
+  .phase-num { font-size:10px; color:var(--muted); margin-bottom:2px; }
+  .phase-name { font-size:12px; font-weight:600; margin-bottom:2px; }
+  .phase-tickets { font-size:11px; color:var(--body); }
+  .phase-done { background:rgba(63,185,80,.04); }
+  .phase-active { background:rgba(88,166,255,.06); border-top:2px solid var(--accent); }
+  .phase-future { opacity:.4; }
 
   /* EXT LINKS */
-  .ext-links { display: flex; gap: 12px; margin-bottom: 24px; }
-  .ext-card { flex: 1; background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: border-color 0.2s; }
-  .ext-card:hover { border-color: var(--accent); }
-  .ext-icon { font-size: 24px; }
-  .ext-title { font-size: 14px; font-weight: 600; color: var(--heading); margin-bottom: 2px; }
-  .ext-sub { font-size: 11px; color: var(--body); }
-  .ext-arrow { margin-right: auto; color: var(--muted); }
+  .ext-links { display:flex; gap:10px; margin-bottom:20px; }
+  .ext-card { flex:1; background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; text-decoration:none; display:flex; align-items:center; gap:10px; transition:border-color .2s; }
+  .ext-card:hover { border-color:var(--accent); }
+  .ext-icon { font-size:20px; }
+  .ext-title { font-size:13px; font-weight:600; color:var(--heading); margin-bottom:2px; }
+  .ext-sub { font-size:11px; color:var(--body); }
+  .ext-arrow { margin-right:auto; color:var(--muted); font-size:14px; }
+
+  /* MOBILE */
+  @media (max-width:900px) {
+    .layout { grid-template-columns:1fr; }
+    .sidebar { display:none; }
+    .feed-panel { display:none; }
+    .stats-row { grid-template-columns:repeat(2,1fr); }
+    .agent-grid { grid-template-columns:1fr; }
+    .dep-grid { grid-template-columns:repeat(2,1fr); }
+    .ext-links { flex-direction:column; }
+    .topbar-center { display:none; }
+  }
+  @media (max-width:500px) {
+    .stats-row { grid-template-columns:1fr 1fr; }
+    .phases { flex-direction:column; }
+    .phase { border-left:none; border-bottom:1px solid var(--border); }
+  }
 </style>
 </head>
 <body>
@@ -144,12 +178,15 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-brand">⚡ AUTOMATIXY · COMMAND CENTER</div>
-  <div class="topbar-links">
+  <div class="topbar-center">
     <a class="topbar-link" href="https://github.com/ToibisJ/automatixy-team-marketing" target="_blank">⌥ GitHub</a>
     <a class="topbar-link" href="https://automatixy.atlassian.net" target="_blank">◈ Jira</a>
     <a class="topbar-link" href="index.html">📄 ברושור</a>
   </div>
-  <div class="topbar-status"><div class="dot"></div> 9 סוכנים פעילים · 26 משימות</div>
+  <div class="topbar-right">
+    <div class="live-clock" id="clock">00:00:00</div>
+    <div class="topbar-status"><div class="dot"></div><span id="active-count">9 סוכנים פעילים</span></div>
+  </div>
 </div>
 
 <div class="layout">
@@ -157,48 +194,103 @@
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-label">פרויקטים</div>
-  <a class="sidebar-item active" href="#">🪑 מפעל רהיטים <span class="badge active-badge">12</span></a>
-  <a class="sidebar-item" href="#">✈️ Zeltivo CRM <span class="badge">26</span></a>
+  <a class="sidebar-item active" href="#">🪑 מפעל רהיטים <span class="badge g">12</span></a>
+  <a class="sidebar-item" href="#">✈️ Zeltivo CRM <span class="badge r">26</span></a>
   <a class="sidebar-item" href="#">🌐 אתר לקוח <span class="badge">5</span></a>
   <a class="sidebar-item" href="#">📱 אפליקציה <span class="badge">8</span></a>
 
   <div class="sidebar-label">סוכנים</div>
-  <a class="sidebar-item" href="#agents">👑 CTO <span class="badge active-badge">פעיל</span></a>
-  <a class="sidebar-item" href="#agents">🔨 Dev Team <span class="badge active-badge">פעיל</span></a>
-  <a class="sidebar-item" href="#agents">🛡️ Security <span class="badge active-badge">פעיל</span></a>
-  <a class="sidebar-item" href="#agents">🔍 QA <span class="badge active-badge">פעיל</span></a>
-  <a class="sidebar-item" href="#agents">📦 Release <span class="badge">ממתין</span></a>
+  <a class="sidebar-item" href="#agents">👑 CTO <span class="badge g">פעיל</span></a>
+  <a class="sidebar-item" href="#agents">🔨 Dev Team <span class="badge g">פעיל</span></a>
+  <a class="sidebar-item" href="#agents">🛡️ Security <span class="badge">ממתין</span></a>
+  <a class="sidebar-item" href="#agents">🔍 QA <span class="badge g">פעיל</span></a>
+  <a class="sidebar-item" href="#agents">🚀 Release <span class="badge">ממתין</span></a>
 
-  <div class="sidebar-label">קישורים</div>
+  <div class="sidebar-label">קישורים חיצוניים</div>
   <a class="sidebar-item" href="https://github.com/ToibisJ" target="_blank">⌥ GitHub ↗</a>
   <a class="sidebar-item" href="https://automatixy.atlassian.net" target="_blank">◈ Jira ↗</a>
+  <a class="sidebar-item" href="index.html">📄 ברושור ↗</a>
 </div>
 
 <!-- MAIN -->
 <div class="main">
-
   <div class="page-title">🪑 מפעל רהיטי עץ — שולחנות, כיסאות ומוצרי עץ</div>
-  <div class="page-sub">פרויקט הקמה מלא · הצוות עובד עליו כעת · עודכן: היום 22:38</div>
+  <div class="page-sub">פרויקט הקמה מלא · עודכן: <span id="last-update"></span></div>
 
   <!-- STATS -->
   <div class="stats-row">
-    <div class="stat-card"><div class="stat-label">סה"כ טיקטים</div><div class="stat-value c-blue">12</div><div class="stat-sub">בפרויקט</div></div>
-    <div class="stat-card"><div class="stat-label">הושלמו</div><div class="stat-value c-green">4</div><div class="stat-sub">33%</div></div>
-    <div class="stat-card"><div class="stat-label">בעבודה</div><div class="stat-value c-yellow">5</div><div class="stat-sub">כרגע</div></div>
-    <div class="stat-card"><div class="stat-label">ממתינים</div><div class="stat-value c-red">3</div><div class="stat-sub">לא התחילו</div></div>
-    <div class="stat-card"><div class="stat-label">סוכנים פעילים</div><div class="stat-value c-purple">9</div><div class="stat-sub">מתוך 17</div></div>
+    <div class="stat-card">
+      <div class="stat-label">סה"כ טיקטים</div>
+      <div class="stat-value c-blue">12</div>
+      <div class="stat-sub">בפרויקט</div>
+      <div class="stat-spark">
+        <div class="spark-bar" style="height:40%;background:var(--accent)"></div>
+        <div class="spark-bar" style="height:55%;background:var(--accent)"></div>
+        <div class="spark-bar" style="height:60%;background:var(--accent)"></div>
+        <div class="spark-bar" style="height:70%;background:var(--accent)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--accent)"></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">הושלמו</div>
+      <div class="stat-value c-green">4</div>
+      <div class="stat-sub">33% מהפרויקט</div>
+      <div class="stat-spark">
+        <div class="spark-bar" style="height:20%;background:var(--green)"></div>
+        <div class="spark-bar" style="height:30%;background:var(--green)"></div>
+        <div class="spark-bar" style="height:50%;background:var(--green)"></div>
+        <div class="spark-bar" style="height:70%;background:var(--green)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--green)"></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">בעבודה עכשיו</div>
+      <div class="stat-value c-yellow">5</div>
+      <div class="stat-sub">פעיל</div>
+      <div class="stat-spark">
+        <div class="spark-bar" style="height:60%;background:var(--yellow)"></div>
+        <div class="spark-bar" style="height:80%;background:var(--yellow)"></div>
+        <div class="spark-bar" style="height:70%;background:var(--yellow)"></div>
+        <div class="spark-bar" style="height:90%;background:var(--yellow)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--yellow)"></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ממתינים</div>
+      <div class="stat-value c-red">3</div>
+      <div class="stat-sub">תלויים באחרים</div>
+      <div class="stat-spark">
+        <div class="spark-bar" style="height:100%;background:var(--red)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--red)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--red)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--red)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--red)"></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">סוכנים פעילים</div>
+      <div class="stat-value c-purple">9</div>
+      <div class="stat-sub">מתוך 16</div>
+      <div class="stat-spark">
+        <div class="spark-bar" style="height:50%;background:var(--purple)"></div>
+        <div class="spark-bar" style="height:60%;background:var(--purple)"></div>
+        <div class="spark-bar" style="height:75%;background:var(--purple)"></div>
+        <div class="spark-bar" style="height:85%;background:var(--purple)"></div>
+        <div class="spark-bar" style="height:100%;background:var(--purple)"></div>
+      </div>
+    </div>
   </div>
 
   <!-- EXT LINKS -->
   <div class="ext-links">
     <a class="ext-card" href="https://github.com/ToibisJ/automatixy-team-marketing" target="_blank">
       <div class="ext-icon">⌥</div>
-      <div><div class="ext-title">GitHub</div><div class="ext-sub">קוד, branches, PRs</div></div>
+      <div><div class="ext-title">GitHub</div><div class="ext-sub">קוד · branches · PRs</div></div>
       <div class="ext-arrow">↗</div>
     </a>
     <a class="ext-card" href="https://automatixy.atlassian.net" target="_blank">
       <div class="ext-icon">◈</div>
-      <div><div class="ext-title">Jira</div><div class="ext-sub">טיקטים, sprints, backlog</div></div>
+      <div><div class="ext-title">Jira</div><div class="ext-sub">טיקטים · sprints · backlog</div></div>
       <div class="ext-arrow">↗</div>
     </a>
     <a class="ext-card" href="index.html">
@@ -210,408 +302,332 @@
 
   <!-- PHASES -->
   <div class="section">
-    <div class="section-header"><div class="section-title">שלבי הפרויקט</div><span class="status-pill sp-working">⚡ שלב 2 פעיל</span></div>
+    <div class="section-header"><div class="section-title">שלבי הפרויקט</div><span class="sp sp-working">⚡ שלב 2 פעיל</span></div>
     <div class="phases">
-      <div class="phase phase-done">
-        <div class="phase-num">שלב 1</div>
-        <div class="phase-name">✅ ניתוח עסקי</div>
-        <div class="phase-tickets">4 טיקטים · הושלם</div>
+      <div class="phase phase-done"><div class="phase-num">שלב 1</div><div class="phase-name">✅ ניתוח עסקי</div><div class="phase-tickets">4 טיקטים · הושלם</div></div>
+      <div class="phase phase-active"><div class="phase-num">שלב 2</div><div class="phase-name">⚡ בניית מערכת</div><div class="phase-tickets">5 טיקטים · פעיל עכשיו</div></div>
+      <div class="phase phase-future"><div class="phase-num">שלב 3</div><div class="phase-name">🔒 QA + אבטחה</div><div class="phase-tickets">2 טיקטים · ממתין</div></div>
+      <div class="phase phase-future"><div class="phase-num">שלב 4</div><div class="phase-name">🚀 השקה</div><div class="phase-tickets">1 טיקט · ממתין</div></div>
+    </div>
+  </div>
+
+  <!-- DEPENDENCY MAP -->
+  <div class="section">
+    <div class="section-header"><div class="section-title">מפת תלויות — מי מחכה למי</div></div>
+    <div class="dep-grid">
+      <div class="dep-col">
+        <div class="dep-col-title">✅ הושלם</div>
+        <div class="dep-ticket done-dep"><div class="dep-ticket-id">WF-01</div><div class="dep-ticket-name">ניתוח קטלוג מוצרים</div></div>
+        <div class="dep-ticket done-dep"><div class="dep-ticket-id">WF-11–14</div><div class="dep-ticket-name">ניתוח עסקי מלא</div></div>
       </div>
-      <div class="phase phase-active">
-        <div class="phase-num">שלב 2</div>
-        <div class="phase-name">⚡ בניית מערכת</div>
-        <div class="phase-tickets">5 טיקטים · פעיל עכשיו</div>
+      <div class="dep-col">
+        <div class="dep-col-title">⚡ בעבודה</div>
+        <div class="dep-ticket active-dep"><div class="dep-ticket-id">WF-02</div><div class="dep-ticket-name">DB Schema</div><div class="dep-arrow">↓ WF-04 תלוי בזה</div></div>
+        <div class="dep-ticket active-dep"><div class="dep-ticket-id">WF-03</div><div class="dep-ticket-name">ממשק הזמנה</div><div class="dep-arrow">↓ WF-05 תלוי בזה</div></div>
+        <div class="dep-ticket active-dep"><div class="dep-ticket-id">WF-04</div><div class="dep-ticket-name">Orders API</div><div class="dep-arrow">↓ WF-07 תלוי בזה</div></div>
       </div>
-      <div class="phase phase-future">
-        <div class="phase-num">שלב 3</div>
-        <div class="phase-name">🔒 QA + אבטחה</div>
-        <div class="phase-tickets">2 טיקטים · ממתין</div>
+      <div class="dep-col">
+        <div class="dep-col-title">⏳ ממתין</div>
+        <div class="dep-ticket"><div class="dep-ticket-id">WF-05</div><div class="dep-ticket-name">דשבורד מנהל</div><div class="dep-arrow">← ממתין ל-WF-03</div></div>
+        <div class="dep-ticket"><div class="dep-ticket-id">WF-07</div><div class="dep-ticket-name">WhatsApp התראות</div><div class="dep-arrow">← ממתין ל-WF-04</div></div>
+        <div class="dep-ticket"><div class="dep-ticket-id">WF-08</div><div class="dep-ticket-name">QA מלא</div><div class="dep-arrow">← ממתין ל-WF-03+04</div></div>
       </div>
-      <div class="phase phase-future">
-        <div class="phase-num">שלב 4</div>
-        <div class="phase-name">🚀 השקה לייצור</div>
-        <div class="phase-tickets">1 טיקט · ממתין</div>
+      <div class="dep-col">
+        <div class="dep-col-title">🔒 חסום</div>
+        <div class="dep-ticket"><div class="dep-ticket-id">WF-09</div><div class="dep-ticket-name">Security Scan</div><div class="dep-arrow">← חסום על WF-08</div></div>
+        <div class="dep-ticket"><div class="dep-ticket-id">WF-10</div><div class="dep-ticket-name">Deploy</div><div class="dep-arrow">← חסום על WF-09</div></div>
       </div>
     </div>
   </div>
 
   <!-- AGENTS -->
   <div class="section" id="agents">
-    <div class="section-header"><div class="section-title">סוכנים — מה כל אחד עושה עכשיו</div></div>
+    <div class="section-header"><div class="section-title">סוכנים — סטטוס בזמן אמת</div></div>
     <div class="agent-grid">
 
-      <!-- CTO -->
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">👑</div>
-            <div><div class="agent-name">CTO — Orchestrator</div><div class="agent-role">מנצח · Sonnet</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> פעיל</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">👑</div><div><div class="agent-name">CTO — Orchestrator</div><div class="agent-role">מנצח · Sonnet · מחזור 3</div></div></div>
+          <span class="sp sp-working"><div class="dot"></div> פעיל</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          מחלק את WF-02, WF-03, WF-04 לצוות. ממתין לסיום WF-03 לפני שמאשר merge.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:40%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:60%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:50%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:80%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:70%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:90%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>התקדמות כוללת</span><span>33%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:33%;background:var(--green);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">📋 4 טיקטים פתוחים</div>
-          <div class="meta-tag">🔁 מחזור 3</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>מחלק WF-02/03/04 לצוות. ממתין לסיום WF-03 לפני אישור merge.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>התקדמות כוללת</span><span>33%</span></div><div class="progress-bg"><div class="progress-fill" style="width:33%;background:var(--green)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">📋 4 פתוחים</div><div class="meta-tag">🔁 מחזור 3</div></div>
       </div>
 
-      <!-- Engineering Manager -->
+      <div class="agent-card reviewing">
+        <div class="agent-top">
+          <div style="display:flex;align-items:center"><div class="agent-icon">🗂️</div><div><div class="agent-name">Engineering Manager</div><div class="agent-role">S-1 · Personnel · Opus</div></div></div>
+          <span class="sp sp-review">🔍 בסקירה</span>
+        </div>
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:30%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:50%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:40%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:70%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:60%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:80%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--yellow)"></div>
+        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>מנתח פערי כישורים. שוקל Mobile Engineer לשלב 3.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>ניתוח roster</span><span>60%</span></div><div class="progress-bg"><div class="progress-fill" style="width:60%;background:var(--yellow)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">👥 16 סוכנים</div><div class="meta-tag">📊 דוח ל-CTO</div></div>
+      </div>
+
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🗂️</div>
-            <div><div class="agent-name">Engineering Manager</div><div class="agent-role">S-1 · Personnel · Opus</div></div>
-          </div>
-          <span class="status-pill sp-review">🔍 בסקירה</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">📦</div><div><div class="agent-name">Product Manager</div><div class="agent-role">S-5 · Product · Opus</div></div></div>
+          <span class="sp sp-working"><div class="dot"></div> פעיל</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          מנתח פערי כישורים בצוות. שוקל להוסיף סוכן Mobile Engineer לשלב 3 אם יידרש.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:50%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:65%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:80%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:70%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:90%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:75%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--accent)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>ניתוח roster</span><span>60%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:60%;background:var(--yellow);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">👥 17 סוכנים</div>
-          <div class="meta-tag">📊 דוח ל-CTO</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>מגדיר requirements לדשבורד מנהל (WF-05) — KPIs: מלאי, הזמנות, הכנסות יומיות.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-05 specs</span><span>75%</span></div><div class="progress-bg"><div class="progress-fill" style="width:75%;background:var(--accent)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag"><span class="ticket-ref">WF-05</span></div><div class="meta-tag">📝 PRD בכתיבה</div></div>
       </div>
 
-      <!-- Product Manager -->
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">📦</div>
-            <div><div class="agent-name">Product Manager</div><div class="agent-role">S-5 · Product · Opus</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> פעיל</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">🔨</div><div><div class="agent-name">Dev Team Lead</div><div class="agent-role">Builder · Opus</div></div></div>
+          <span class="sp sp-working"><div class="dot"></div> פעיל</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          מגדיר requirements לדשבורד מנהל (WF-05) — אילו KPIs להציג: מלאי, הזמנות, הכנסות יומיות.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-05 specs</span><span>75%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:75%;background:var(--accent);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-05</span></div>
-          <div class="meta-tag">📝 PRD בכתיבה</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>פיצל WF-04 ל-3 sub-tasks: auth middleware, order endpoints, payment webhook.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-04 פירוק</span><span>100%</span></div><div class="progress-bg"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag"><span class="ticket-ref">WF-04</span></div><div class="meta-tag">✅ פוצל ל-3</div><div class="meta-tag">🌿 Worktree</div></div>
       </div>
 
-      <!-- Dev Team Lead -->
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🔨</div>
-            <div><div class="agent-name">Dev Team Lead</div><div class="agent-role">Builder · Opus</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> פעיל</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">🖥️</div><div><div class="agent-name">Frontend Engineer</div><div class="agent-role">Builder · Opus</div></div></div>
+          <span class="sp sp-working"><div class="dot"></div> כותב קוד</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          פיצל את WF-04 ל-3 sub-tasks: auth middleware, order endpoints, payment webhook. מחלק לצוות.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:20%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:30%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:35%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:40%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:43%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:44%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:45%;background:var(--accent)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-04 פירוק</span><span>100%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:100%;background:var(--green);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-04</span></div>
-          <div class="meta-tag">✅ פוצל ל-3</div>
-          <div class="meta-tag">🌿 Worktree מבודד</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>בונה ממשק הזמנה ללקוח (WF-03): בחירת מוצר, כמות, צבע עץ, מחיר דינמי. React + RTL.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-03 · ממשק הזמנה</span><span>45%</span></div><div class="progress-bg"><div class="progress-fill" style="width:45%;background:var(--accent)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag"><span class="ticket-ref">WF-03</span></div><div class="meta-tag">⚛️ React</div><div class="meta-tag">🌿 feat/order-ui</div></div>
       </div>
 
-      <!-- Frontend Engineer -->
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🖥️</div>
-            <div><div class="agent-name">Frontend Engineer</div><div class="agent-role">Builder · Opus</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> כותב קוד</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">⚙️</div><div><div class="agent-name">Ordnance BE</div><div class="agent-role">Backend · Opus</div></div></div>
+          <span class="sp sp-working"><div class="dot"></div> כותב קוד</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          בונה ממשק הזמנה ללקוח (WF-03): בחירת מוצר, כמות, צבע עץ, מחיר דינמי. React + RTL.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:30%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:40%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:50%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:55%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:58%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:59%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:60%;background:var(--yellow)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-03 · ממשק הזמנה</span><span>45%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:45%;background:var(--accent);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-03</span></div>
-          <div class="meta-tag">⚛️ React</div>
-          <div class="meta-tag">🌿 branch: feat/order-ui</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>מפתח API הזמנות (WF-04): POST /orders, GET /orders/:id, Stripe webhook.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-04 · Orders API</span><span>60%</span></div><div class="progress-bg"><div class="progress-fill" style="width:60%;background:var(--yellow)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag"><span class="ticket-ref">WF-04</span></div><div class="meta-tag">🟢 Node.js</div><div class="meta-tag">💳 Stripe</div></div>
       </div>
 
-      <!-- Backend Engineer -->
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">⚙️</div>
-            <div><div class="agent-name">Ordnance BE</div><div class="agent-role">Backend Engineer · Opus</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> כותב קוד</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">🗄️</div><div><div class="agent-name">Logistics DB</div><div class="agent-role">Database · Opus</div></div></div>
+          <span class="sp sp-review">🔍 Code Review</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          מפתח API הזמנות (WF-04): POST /orders, GET /orders/:id, webhook לתשלום ב-Stripe.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:50%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:60%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:70%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:75%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:78%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:79%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:80%;background:var(--green)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-04 · Orders API</span><span>60%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:60%;background:var(--yellow);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-04</span></div>
-          <div class="meta-tag">🟢 Node.js</div>
-          <div class="meta-tag">💳 Stripe webhook</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>Schema מוכן (WF-02). ממתין להערות Code Reviewer — 2 הערות על index ושם טבלה.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-02 · DB Schema</span><span>80%</span></div><div class="progress-bg"><div class="progress-fill" style="width:80%;background:var(--green)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag"><span class="ticket-ref">WF-02</span></div><div class="meta-tag">🐘 PostgreSQL</div><div class="meta-tag">⚠️ 2 הערות</div></div>
       </div>
 
-      <!-- Logistics DB -->
-      <div class="agent-card working">
-        <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🗄️</div>
-            <div><div class="agent-name">Logistics DB</div><div class="agent-role">Database Engineer · Opus</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> כותב קוד</span>
-        </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          בונה schema (WF-02): טבלאות products, orders, inventory, wood_types. אינדקסים לחיפוש מהיר.
-        </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-02 · DB Schema</span><span>80%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:80%;background:var(--green);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-02</span></div>
-          <div class="meta-tag">🐘 PostgreSQL</div>
-          <div class="meta-tag">📋 Migration מוכן</div>
-        </div>
-      </div>
-
-      <!-- DevOps -->
       <div class="agent-card idle">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">☁️</div>
-            <div><div class="agent-name">DevOps</div><div class="agent-role">Infrastructure · Opus</div></div>
-          </div>
-          <span class="status-pill sp-waiting">⏳ ממתין</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">☁️</div><div><div class="agent-name">DevOps</div><div class="agent-role">Infrastructure · Opus</div></div></div>
+          <span class="sp sp-waiting">⏳ ממתין</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">ממתין ל</div>
-          WF-02 ו-WF-04 לסיים לפני הכנת סביבת staging. יקים Docker + CI/CD pipeline.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:10%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:10%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:10%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:10%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:10%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:10%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:10%;background:var(--muted)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-10 · Deploy setup</span><span>0%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:0%;background:var(--muted);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-10</span></div>
-          <div class="meta-tag">🐳 Docker</div>
-          <div class="meta-tag">⚙️ CI/CD</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">ממתין ל</div>WF-02 ו-WF-04 לסיים. יכין Docker + CI/CD pipeline.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-10 · Deploy setup</span><span>0%</span></div><div class="progress-bg"><div class="progress-fill" style="width:0%;background:var(--muted)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">🐳 Docker</div><div class="meta-tag">⚙️ CI/CD</div></div>
       </div>
 
-      <!-- Code Reviewer -->
+      <div class="agent-card reviewing">
+        <div class="agent-top">
+          <div style="display:flex;align-items:center"><div class="agent-icon">🔎</div><div><div class="agent-name">Code Reviewer</div><div class="agent-role">Quality Gate · Opus</div></div></div>
+          <span class="sp sp-review">🔍 בסקירה</span>
+        </div>
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:60%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:80%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:65%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:90%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:70%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:95%;background:var(--yellow)"></div>
+          <div class="agent-spark-bar" style="height:70%;background:var(--yellow)"></div>
+        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>סוקר PR #12 של WF-02. מצא: חסר index על orders.created_at, שם טבלה לא עקבי.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>PR #12 Review</span><span>70%</span></div><div class="progress-bg"><div class="progress-fill" style="width:70%;background:var(--yellow)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">⚠️ 2 הערות</div><div class="meta-tag">🔀 PR #12</div></div>
+      </div>
+
+      <div class="agent-card idle">
+        <div class="agent-top">
+          <div style="display:flex;align-items:center"><div class="agent-icon">🧪</div><div><div class="agent-name">Test Engineer</div><div class="agent-role">Tests & Coverage · Opus</div></div></div>
+          <span class="sp sp-waiting">⏳ ממתין</span>
+        </div>
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+        </div>
+        <div class="agent-task"><div class="agent-task-label">ממתין ל</div>WF-03 ו-WF-04 לסיים. יכתוב happy-path + regression suite.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>כיסוי טסטים</span><span>0%</span></div><div class="progress-bg"><div class="progress-fill" style="width:0%;background:var(--muted)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">🧪 Jest</div><div class="meta-tag">📊 Coverage gate</div></div>
+      </div>
+
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🔎</div>
-            <div><div class="agent-name">Code Reviewer</div><div class="agent-role">Quality Gate · Opus</div></div>
-          </div>
-          <span class="status-pill sp-review">🔍 בסקירה</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">🔍</div><div><div class="agent-name">QA Engineer</div><div class="agent-role">S-2 · QA Recon · Opus</div></div></div>
+          <span class="sp sp-working"><div class="dot"></div> פעיל</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          סוקר PR של WF-02 (DB schema). מצא 2 הערות: חסר index על orders.created_at, שם טבלה לא עקבי.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:10%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:15%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:20%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:22%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:24%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:24%;background:var(--accent)"></div>
+          <div class="agent-spark-bar" style="height:25%;background:var(--accent)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>PR #12 Review</span><span>70%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:70%;background:var(--yellow);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">⚠️ 2 הערות</div>
-          <div class="meta-tag">🔀 PR #12</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">משימה נוכחית</div>Smoke tests על DEV. בודק: flow רכישה, טיפול בשגיאות, mobile responsive, accessibility.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-08 · QA Round 1</span><span>25%</span></div><div class="progress-bg"><div class="progress-fill" style="width:25%;background:var(--accent)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag"><span class="ticket-ref">WF-08</span></div><div class="meta-tag">📱 Mobile</div><div class="meta-tag">♿ A11y</div></div>
       </div>
 
-      <!-- Test Engineer -->
       <div class="agent-card idle">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🧪</div>
-            <div><div class="agent-name">Test Engineer</div><div class="agent-role">Tests & Coverage · Opus</div></div>
-          </div>
-          <span class="status-pill sp-waiting">⏳ ממתין</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">🛡️</div><div><div class="agent-name">Security Engineer</div><div class="agent-role">Security Gate · Opus</div></div></div>
+          <span class="sp sp-waiting">⏳ ממתין ל-QA</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">ממתין ל</div>
-          ממתין ל-WF-03 ו-WF-04 לסיים לפני כתיבת happy-path tests וregression suite.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>כיסוי טסטים</span><span>0%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:0%;background:var(--muted);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">🧪 Jest</div>
-          <div class="meta-tag">📊 Coverage gate</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">ממתין ל</div>QA לסיים. יריץ: secrets scan, SQL injection, auth, OWASP Top 10, dep audit.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>WF-09 · Security Scan</span><span>0%</span></div><div class="progress-bg"><div class="progress-fill" style="width:0%;background:var(--muted)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">🔒 OWASP</div><div class="meta-tag">📦 Dep audit</div></div>
       </div>
 
-      <!-- QA Engineer -->
+      <div class="agent-card idle">
+        <div class="agent-top">
+          <div style="display:flex;align-items:center"><div class="agent-icon">🚀</div><div><div class="agent-name">Release Manager</div><div class="agent-role">S-4 · Deploy · Opus</div></div></div>
+          <span class="sp sp-idle">— ממתין</span>
+        </div>
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+        </div>
+        <div class="agent-task"><div class="agent-task-label">חסום על</div>Security green-light. יבדוק: build pass, migrations, env vars, deploy config.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>Release checklist</span><span>0%</span></div><div class="progress-bg"><div class="progress-fill" style="width:0%;background:var(--muted)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">🔒 חסום על Security</div></div>
+      </div>
+
+      <div class="agent-card idle">
+        <div class="agent-top">
+          <div style="display:flex;align-items:center"><div class="agent-icon">🔁</div><div><div class="agent-name">SRE</div><div class="agent-role">S-3 · Integration · דטרמיניסטי</div></div></div>
+          <span class="sp sp-idle">— Standby</span>
+        </div>
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+          <div class="agent-spark-bar" style="height:5%;background:var(--muted)"></div>
+        </div>
+        <div class="agent-task"><div class="agent-task-label">מצב</div>Standby לאחר merge. Rollback אוטומטי אם משהו נשבר.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>Integration tests</span><span>—</span></div><div class="progress-bg"><div class="progress-fill" style="width:0%;background:var(--muted)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">🔁 Auto-rollback</div><div class="meta-tag">⚡ Zero downtime</div></div>
+      </div>
+
       <div class="agent-card working">
         <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🔍</div>
-            <div><div class="agent-name">QA Engineer</div><div class="agent-role">S-2 · QA / Recon · Opus</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> פעיל</span>
+          <div style="display:flex;align-items:center"><div class="agent-icon">📚</div><div><div class="agent-name">Engineering Coach</div><div class="agent-role">Doctrine & Training · Opus</div></div></div>
+          <span class="sp sp-done">✅ Drill שלח</span>
         </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          מריץ smoke tests על DEV env. בדיקת ממשק ההזמנה: flow רכישה, טיפול בשגיאות, responsive mobile.
+        <div class="agent-spark">
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
+          <div class="agent-spark-bar" style="height:100%;background:var(--green)"></div>
         </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-08 · QA Round 1</span><span>25%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:25%;background:var(--accent);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-08</span></div>
-          <div class="meta-tag">📱 Mobile test</div>
-          <div class="meta-tag">♿ Accessibility</div>
-        </div>
-      </div>
-
-      <!-- Security Engineer -->
-      <div class="agent-card idle">
-        <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🛡️</div>
-            <div><div class="agent-name">Security Engineer</div><div class="agent-role">Security Gate · Opus</div></div>
-          </div>
-          <span class="status-pill sp-waiting">⏳ ממתין</span>
-        </div>
-        <div class="agent-task">
-          <div class="agent-task-label">ממתין ל</div>
-          ממתין ל-QA לסיים. יריץ: secrets scan, SQL injection check, auth vulnerabilities, dep audit.
-        </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>WF-09 · Security Scan</span><span>0%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:0%;background:var(--muted);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag"><span class="ticket-ref">WF-09</span></div>
-          <div class="meta-tag">🔒 OWASP</div>
-          <div class="meta-tag">📦 Dep audit</div>
-        </div>
-      </div>
-
-      <!-- Release Manager -->
-      <div class="agent-card idle">
-        <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🚀</div>
-            <div><div class="agent-name">Release Manager</div><div class="agent-role">S-4 · Deploy · Opus</div></div>
-          </div>
-          <span class="status-pill sp-idle">— ממתין</span>
-        </div>
-        <div class="agent-task">
-          <div class="agent-task-label">ממתין ל</div>
-          Security green-light לפני אישור deploy. יבדוק: build pass, migrations, env vars, deploy config.
-        </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>Release checklist</span><span>0%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:0%;background:var(--muted);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">🔒 חסום על Security</div>
-        </div>
-      </div>
-
-      <!-- SRE -->
-      <div class="agent-card idle">
-        <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🔁</div>
-            <div><div class="agent-name">SRE</div><div class="agent-role">S-3 · Integration · דטרמיניסטי</div></div>
-          </div>
-          <span class="status-pill sp-idle">— standby</span>
-        </div>
-        <div class="agent-task">
-          <div class="agent-task-label">מצב</div>
-          בהמתנה לאחר merge. יריץ integration suite ויבצע rollback אוטומטי אם משהו נשבר.
-        </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>Integration tests</span><span>—</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:0%;background:var(--muted);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">🔁 Auto-rollback</div>
-          <div class="meta-tag">⚡ Zero downtime</div>
-        </div>
-      </div>
-
-      <!-- Engineering Coach -->
-      <div class="agent-card working">
-        <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">📚</div>
-            <div><div class="agent-name">Engineering Coach</div><div class="agent-role">Doctrine & Training · Opus</div></div>
-          </div>
-          <span class="status-pill sp-working"><div class="dot"></div> פעיל</span>
-        </div>
-        <div class="agent-task">
-          <div class="agent-task-label">משימה נוכחית</div>
-          הציע drill יומי: Frontend Engineer יוסיף error boundary ל-React. מעדכן charter של QA Engineer.
-        </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>Daily drill #7</span><span>100%</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:100%;background:var(--green);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">📖 Drill מוכן</div>
-          <div class="meta-tag">✅ נשלח לצוות</div>
-        </div>
-      </div>
-
-      <!-- Mayor -->
-      <div class="agent-card idle">
-        <div class="agent-top">
-          <div style="display:flex;align-items:center;">
-            <div class="agent-icon">🏛️</div>
-            <div><div class="agent-name">Mayor</div><div class="agent-role">Inter-unit Ambassador</div></div>
-          </div>
-          <span class="status-pill sp-idle">— שקט</span>
-        </div>
-        <div class="agent-task">
-          <div class="agent-task-label">מצב</div>
-          אין תקשורת חיצונית ביוזמה. מוכן לקבל ברכות וסטטוס בלבד מיחידות חיצוניות.
-        </div>
-        <div class="agent-progress">
-          <div class="progress-label"><span>תקשורת חיצונית</span><span>—</span></div>
-          <div class="progress-bar-bg"><div class="progress-bar" style="width:0%;background:var(--muted);"></div></div>
-        </div>
-        <div class="agent-meta">
-          <div class="meta-tag">🚫 לא חושף פנים</div>
-          <div class="meta-tag">🤝 שגריר בלבד</div>
-        </div>
+        <div class="agent-task"><div class="agent-task-label">הושלם היום</div>Drill #7: Frontend יוסיף error boundary ל-React. Charter של QA עודכן.</div>
+        <div class="progress-wrap"><div class="progress-label-row"><span>Daily drill #7</span><span>100%</span></div><div class="progress-bg"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div>
+        <div class="agent-foot"><div class="meta-tag">📖 Drill מוכן</div><div class="meta-tag">✅ נשלח</div></div>
       </div>
 
     </div>
@@ -624,93 +640,151 @@
       <a class="section-link" href="https://automatixy.atlassian.net" target="_blank">פתח ב-Jira ↗</a>
     </div>
     <div class="table-wrap">
-      <table class="workflow-table">
-        <thead>
-          <tr>
-            <th>מזהה</th>
-            <th>משימה</th>
-            <th>אחראי</th>
-            <th>עדיפות</th>
-            <th>סטטוס</th>
-          </tr>
-        </thead>
+      <table class="wt">
+        <thead><tr><th>מזהה</th><th>משימה</th><th>אחראי</th><th>תלוי ב</th><th>עדיפות</th><th>סטטוס</th></tr></thead>
         <tbody>
-          <tr>
-            <td><span class="ticket-id">WF-01</span></td>
-            <td><div class="ticket-title">ניתוח קטלוג מוצרים</div><div class="ticket-desc">שולחנות, כיסאות, מוצרי עץ — מחירים, מידות, חומרים</div></td>
-            <td><span class="owner-pill">📦 Product Manager</span></td>
-            <td><span class="ptag ptag-high">גבוה</span></td>
-            <td><span class="status-pill sp-done">✅ הושלם</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-02</span></td>
-            <td><div class="ticket-title">מסד נתונים — מלאי והזמנות</div><div class="ticket-desc">Schema: products, orders, inventory, wood_types, customers</div></td>
-            <td><span class="owner-pill">🗄️ Logistics DB</span></td>
-            <td><span class="ptag ptag-high">גבוה</span></td>
-            <td><span class="status-pill sp-review">🔍 Code Review</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-03</span></td>
-            <td><div class="ticket-title">ממשק הזמנה ללקוח</div><div class="ticket-desc">בחירת מוצר, כמות, צבע עץ, מחיר דינמי, סל קניות</div></td>
-            <td><span class="owner-pill">🖥️ Frontend</span></td>
-            <td><span class="ptag ptag-high">גבוה</span></td>
-            <td><span class="status-pill sp-working">⚡ בעבודה 45%</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-04</span></td>
-            <td><div class="ticket-title">API ניהול הזמנות ותשלומים</div><div class="ticket-desc">REST API: הזמנות, סטטוס, Stripe webhook, מיילים אוטומטיים</div></td>
-            <td><span class="owner-pill">⚙️ Backend</span></td>
-            <td><span class="ptag ptag-high">גבוה</span></td>
-            <td><span class="status-pill sp-working">⚡ בעבודה 60%</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-05</span></td>
-            <td><div class="ticket-title">דשבורד מנהל מפעל</div><div class="ticket-desc">מלאי, הזמנות, הכנסות יומיות, ייצור בתהליך, התראות</div></td>
-            <td><span class="owner-pill">🖥️ Frontend</span></td>
-            <td><span class="ptag ptag-med">בינוני</span></td>
-            <td><span class="status-pill sp-waiting">⏳ ממתין ל-WF-03</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-06</span></td>
-            <td><div class="ticket-title">מודול ייצור — מעקב שלבי ייצור</div><div class="ticket-desc">כל פריט: חיתוך → ליטוש → צביעה → אריזה → משלוח</div></td>
-            <td><span class="owner-pill">⚙️ Backend</span></td>
-            <td><span class="ptag ptag-med">בינוני</span></td>
-            <td><span class="status-pill sp-working">⚡ בעבודה 30%</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-07</span></td>
-            <td><div class="ticket-title">התראות WhatsApp אוטומטיות</div><div class="ticket-desc">אישור הזמנה, עדכון ייצור, הודעת משלוח, קבלת תשלום</div></td>
-            <td><span class="owner-pill">⚙️ Backend</span></td>
-            <td><span class="ptag ptag-med">בינוני</span></td>
-            <td><span class="status-pill sp-waiting">⏳ ממתין ל-WF-04</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-08</span></td>
-            <td><div class="ticket-title">QA מלא — עומס, UX, mobile</div><div class="ticket-desc">100 הזמנות במקביל, בדיקת mobile, accessibility, edge cases</div></td>
-            <td><span class="owner-pill">🔍 QA Engineer</span></td>
-            <td><span class="ptag ptag-med">בינוני</span></td>
-            <td><span class="status-pill sp-working">⚡ בעבודה 25%</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-09</span></td>
-            <td><div class="ticket-title">Security Scan מלא</div><div class="ticket-desc">SQL injection, XSS, auth bypass, secrets scan, OWASP Top 10</div></td>
-            <td><span class="owner-pill">🛡️ Security</span></td>
-            <td><span class="ptag ptag-high">גבוה</span></td>
-            <td><span class="status-pill sp-waiting">⏳ ממתין ל-WF-08</span></td>
-          </tr>
-          <tr>
-            <td><span class="ticket-id">WF-10</span></td>
-            <td><div class="ticket-title">Deploy לייצור + דומיין</div><div class="ticket-desc">Docker, CI/CD pipeline, SSL, domain setup, monitoring</div></td>
-            <td><span class="owner-pill">🚀 Release Manager</span></td>
-            <td><span class="ptag ptag-low">נמוך</span></td>
-            <td><span class="status-pill sp-waiting">⏳ ממתין ל-WF-09</span></td>
-          </tr>
+          <tr><td><span class="tid">WF-01</span></td><td><div class="ttitle">ניתוח קטלוג מוצרים</div><div class="tdesc">שולחנות, כיסאות, מוצרי עץ — מחירים, מידות</div></td><td><span class="owner-pill">📦 Product</span></td><td>—</td><td><span class="ptag ptag-h">גבוה</span></td><td><span class="sp sp-done">✅ הושלם</span></td></tr>
+          <tr><td><span class="tid">WF-02</span></td><td><div class="ttitle">DB Schema — מלאי והזמנות</div><div class="tdesc">products, orders, inventory, wood_types, customers</div></td><td><span class="owner-pill">🗄️ DB</span></td><td><span class="dep-tag">WF-01</span></td><td><span class="ptag ptag-h">גבוה</span></td><td><span class="sp sp-review">🔍 Code Review</span></td></tr>
+          <tr><td><span class="tid">WF-03</span></td><td><div class="ttitle">ממשק הזמנה ללקוח</div><div class="tdesc">בחירת מוצר, כמות, צבע עץ, מחיר דינמי, סל קניות</div></td><td><span class="owner-pill">🖥️ Frontend</span></td><td><span class="dep-tag">WF-02</span></td><td><span class="ptag ptag-h">גבוה</span></td><td><span class="sp sp-working">⚡ 45%</span></td></tr>
+          <tr><td><span class="tid">WF-04</span></td><td><div class="ttitle">Orders API + תשלומים</div><div class="tdesc">REST API, Stripe webhook, מיילים אוטומטיים</div></td><td><span class="owner-pill">⚙️ Backend</span></td><td><span class="dep-tag">WF-02</span></td><td><span class="ptag ptag-h">גבוה</span></td><td><span class="sp sp-working">⚡ 60%</span></td></tr>
+          <tr><td><span class="tid">WF-05</span></td><td><div class="ttitle">דשבורד מנהל מפעל</div><div class="tdesc">מלאי, הזמנות, הכנסות, ייצור בתהליך, התראות</div></td><td><span class="owner-pill">🖥️ Frontend</span></td><td><span class="dep-tag">WF-03</span></td><td><span class="ptag ptag-m">בינוני</span></td><td><span class="sp sp-waiting">⏳ ממתין</span></td></tr>
+          <tr><td><span class="tid">WF-06</span></td><td><div class="ttitle">מודול ייצור — מעקב שלבים</div><div class="tdesc">חיתוך → ליטוש → צביעה → אריזה → משלוח</div></td><td><span class="owner-pill">⚙️ Backend</span></td><td><span class="dep-tag">WF-04</span></td><td><span class="ptag ptag-m">בינוני</span></td><td><span class="sp sp-working">⚡ 30%</span></td></tr>
+          <tr><td><span class="tid">WF-07</span></td><td><div class="ttitle">WhatsApp התראות אוטומטיות</div><div class="tdesc">אישור הזמנה, עדכון ייצור, הודעת משלוח</div></td><td><span class="owner-pill">⚙️ Backend</span></td><td><span class="dep-tag">WF-04</span></td><td><span class="ptag ptag-m">בינוני</span></td><td><span class="sp sp-waiting">⏳ ממתין</span></td></tr>
+          <tr><td><span class="tid">WF-08</span></td><td><div class="ttitle">QA מלא — עומס, UX, mobile</div><div class="tdesc">100 הזמנות במקביל, mobile, accessibility, edge cases</div></td><td><span class="owner-pill">🔍 QA</span></td><td><span class="dep-tag">WF-03+04</span></td><td><span class="ptag ptag-m">בינוני</span></td><td><span class="sp sp-working">⚡ 25%</span></td></tr>
+          <tr><td><span class="tid">WF-09</span></td><td><div class="ttitle">Security Scan מלא</div><div class="tdesc">SQL injection, XSS, auth bypass, secrets, OWASP Top 10</div></td><td><span class="owner-pill">🛡️ Security</span></td><td><span class="dep-tag">WF-08</span></td><td><span class="ptag ptag-h">גבוה</span></td><td><span class="sp sp-waiting">⏳ ממתין</span></td></tr>
+          <tr><td><span class="tid">WF-10</span></td><td><div class="ttitle">Deploy לייצור + דומיין</div><div class="tdesc">Docker, CI/CD, SSL, domain setup, monitoring</div></td><td><span class="owner-pill">🚀 Release</span></td><td><span class="dep-tag">WF-09</span></td><td><span class="ptag ptag-l">נמוך</span></td><td><span class="sp sp-idle">— ממתין</span></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
 </div>
+
+<!-- ACTIVITY FEED -->
+<div class="feed-panel">
+  <div class="feed-title">📡 Activity Feed</div>
+  <div id="feed-list">
+    <div class="feed-item">
+      <div class="feed-icon">🔎</div>
+      <div class="feed-body">
+        <div class="feed-agent">Code Reviewer <span class="new-tag">חדש</span></div>
+        <div class="feed-action">הגיש 2 הערות על PR #12 — חסר index על orders.created_at</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--yellow)"></div> לפני 4 דקות</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">🔨</div>
+      <div class="feed-body">
+        <div class="feed-agent">Dev Team Lead</div>
+        <div class="feed-action">פיצל WF-04 ל-3 sub-tasks ופתח worktree מבודד</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--green)"></div> לפני 12 דקות</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">🖥️</div>
+      <div class="feed-body">
+        <div class="feed-agent">Frontend Engineer</div>
+        <div class="feed-action">עדכן התקדמות WF-03 ל-45% — רכיב בחירת מוצר הושלם</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--accent)"></div> לפני 18 דקות</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">📚</div>
+      <div class="feed-body">
+        <div class="feed-agent">Engineering Coach</div>
+        <div class="feed-action">שלח Drill #7 לכל הצוות — error boundary ל-React</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--green)"></div> לפני 31 דקות</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">🗄️</div>
+      <div class="feed-body">
+        <div class="feed-agent">Logistics DB</div>
+        <div class="feed-action">פתח PR #12 לסקירה — DB Schema מוכן עם migrations</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--green)"></div> לפני 47 דקות</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">⚙️</div>
+      <div class="feed-body">
+        <div class="feed-agent">Ordnance BE</div>
+        <div class="feed-action">הוסיף Stripe webhook endpoint — payment flow עובד</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--yellow)"></div> לפני 1:02 שעה</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">🔍</div>
+      <div class="feed-body">
+        <div class="feed-agent">QA Engineer</div>
+        <div class="feed-action">התחיל smoke tests על DEV — mobile flow נכשל בצעד 3</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--red)"></div> לפני 1:15 שעה</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">👑</div>
+      <div class="feed-body">
+        <div class="feed-agent">CTO</div>
+        <div class="feed-action">אישר תחילת שלב 2 — חילק משימות ל-5 סוכנים</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--green)"></div> לפני 2:30 שעה</div>
+      </div>
+    </div>
+    <div class="feed-item">
+      <div class="feed-icon">📦</div>
+      <div class="feed-body">
+        <div class="feed-agent">Product Manager</div>
+        <div class="feed-action">סיים PRD לשלב 1 — ניתוח קטלוג מוצרים אושר</div>
+        <div class="feed-time"><div class="feed-dot" style="background:var(--purple)"></div> לפני 3:45 שעה</div>
+      </div>
+    </div>
+  </div>
 </div>
+
+</div>
+
+<script>
+  // LIVE CLOCK
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m + ':' + s;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // LAST UPDATE
+  const now = new Date();
+  document.getElementById('last-update').textContent =
+    now.toLocaleDateString('he-IL') + ' · ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+
+  // SIMULATE NEW FEED ITEMS
+  const newItems = [
+    { icon:'⚙️', agent:'Ordnance BE', action:'עדכן התקדמות WF-04 ל-61%', color:'var(--yellow)', time:'עכשיו' },
+    { icon:'🔎', agent:'Code Reviewer', action:'ביקש תיקון index על orders.created_at', color:'var(--yellow)', time:'עכשיו' },
+    { icon:'🖥️', agent:'Frontend Engineer', action:'סיים רכיב product-picker — merge מוכן', color:'var(--green)', time:'עכשיו' },
+  ];
+  let idx = 0;
+  setInterval(function() {
+    if (idx >= newItems.length) return;
+    const item = newItems[idx++];
+    const el = document.createElement('div');
+    el.className = 'feed-item';
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.5s';
+    el.innerHTML =
+      '<div class="feed-icon">' + item.icon + '</div>' +
+      '<div class="feed-body">' +
+        '<div class="feed-agent">' + item.agent + ' <span class="new-tag">חדש</span></div>' +
+        '<div class="feed-action">' + item.action + '</div>' +
+        '<div class="feed-time"><div class="feed-dot" style="background:' + item.color + '"></div> ' + item.time + '</div>' +
+      '</div>';
+    const list = document.getElementById('feed-list');
+    list.insertBefore(el, list.firstChild);
+    setTimeout(function() { el.style.opacity = '1'; }, 50);
+  }, 15000);
+</script>
 </body>
 </html>
